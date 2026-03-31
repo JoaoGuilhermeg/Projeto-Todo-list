@@ -1,17 +1,40 @@
 
 'use client'
-import {useState} from 'react' 
-import {supabase} from '../lib/supabaseclient'
+
+import {useState, useEffect} from 'react' 
+import { supabase } from '@/lib/supabaseClient'
 
 export default function Home() {
   const [task, setTask] =useState('')
   const [tasks, setTasks] =useState<string[]>([])
+  
   
   function addTask (){
     setTasks([...tasks, task])
     setTask('')
   
   }
+
+  //salvar tarefa
+  async function addTaskD() {
+    await supabase
+    .from('tasks')
+    .insert({title: task})
+    setTask('')
+    loadTasks()
+    
+  }
+
+  //busca por todas as tarefas
+  async function loadTasks() {
+    const {data} =  await supabase
+    .from ('tasks')
+    .select('*')
+    setTasks(data ?? [])
+  }
+  
+  //carregar ao abrir a pagina
+  useEffect(() => {loadTasks()}, [])
 
   return(
     <div style= {{ padding:40}}>
@@ -30,26 +53,7 @@ export default function Home() {
     </div>
   )
 
-  //Salvar uma tarefa nova
-  async function addTask () {
-    await supabase
-    .from('tasks')
-    .insert({title: task})
-    setTask('')
-    loadTask()
-  }
-
-  //Busca por todas as tarefas
-  async function loadTask () {
-    const {data} = await supabase
-    .from ('tasks')
-    setTask(data ?? [])
-  }
-
-  //carregamento ao abrir a página
-  useEffect (() => {
-    loadTask()
-  }, [])
+  
 }
 
 
