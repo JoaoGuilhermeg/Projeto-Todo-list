@@ -2,7 +2,7 @@
 'use client'
 
 import {useState, useEffect} from 'react' 
-import { supabase } from '@/lib/supabaseClient'
+import { supabase } from '@/lib/supabaseclient'
 
 export default function Home() {
   const [task, setTask] =useState('')
